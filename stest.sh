@@ -48,16 +48,16 @@ expect_ok() {
     else
         ${CMD} >"${CURR_TEST}/${FILE_OUT}" 2>"${CURR_TEST}/${FILE_STDERR}"
     fi
-    
+
     ERR_CODE="${?}"
     DIFF="$(diff "${CURR_TEST}"/${FILE_REF} "${CURR_TEST}"/${FILE_OUT})"
 
     if [ -z "${DIFF}" ] && [ "${ERR_CODE}" -eq 0 ]; then
         print_ok_color "[PASSED] ${CURR_TEST}"
-	else
+    else
         FAIL_COUNT=$((FAIL_COUNT+1))
 
-		print_fail_color "[FAILED] ${CURR_TEST}"
+        print_fail_color "[FAILED] ${CURR_TEST}"
 
         # print command
         echo "${CMD} ${CURR_TEST}/${FILE_IN}"
@@ -66,7 +66,7 @@ expect_ok() {
         # TODO diff -U0 --label="" --label="" test/002-fail/ref test/002-fail/out
         #   show only differences
         echo "${DIFF}"
-	fi
+    fi
 }
 
 expect_err() {
@@ -80,15 +80,15 @@ expect_err() {
     else
         ${CMD} >"${CURR_TEST}/${FILE_OUT}" 2>"${CURR_TEST}/${FILE_STDERR}"
     fi
-    
+
     ERR_CODE="${?}"
 
     if [ "${ERR_CODE}" -eq "${ERR_EXPECT}" ]; then
         print_ok_color "[PASSED] ${CURR_TEST}"
-	else
+    else
         FAIL_COUNT=$(${FAIL_COUNT} + 1)
 
-		print_fail_color "[FAILED] ${CURR_TEST}"
+        print_fail_color "[FAILED] ${CURR_TEST}"
 
         echo "expected err: ${ERR_EXPECT}"
         echo "got: ${ERR_CODE}"
@@ -97,7 +97,7 @@ expect_err() {
         echo "${CMD} ${CURR_TEST}/${FILE_IN}"
 
         cat "${CURR_TEST}/${FILE_OUT}"
-	fi
+    fi
 }
 
 test() {
@@ -121,7 +121,7 @@ test() {
         if [ "${EXPECTED_ERR}" -ne 0 ]; then
             expect_err "${d}" "${CMD}" "${EXPECTED_ERR}"
         else
-            expect_ok "${d}" "${CMD}" 
+            expect_ok "${d}" "${CMD}"
         fi
 
     done
@@ -137,20 +137,20 @@ print_final_score() {
 
 ###################### argument parsing #########################
 while getopts "ce:d:" opt; do
-  case ${opt} in
-    c )
-        ACTION="CLEAN"
-        ;;
-    e )
-        DEFAULT_CMD=$OPTARG
-        ;;
-    d )
-        TEST_DIR=$OPTARG
-        ;;
-    \? )
-        echo "Usage: stest.sh [-c] [-e \"default_command\"] [-d \"directory\"]"
-        ;;
-  esac
+    case ${opt} in
+        c )
+            ACTION="CLEAN"
+            ;;
+        e )
+            DEFAULT_CMD=$OPTARG
+            ;;
+        d )
+            TEST_DIR=$OPTARG
+            ;;
+        \? )
+            echo "Usage: stest.sh [-c] [-e \"default_command\"] [-d \"directory\"]"
+            ;;
+    esac
 done
 shift $((OPTIND -1))
 
@@ -163,7 +163,7 @@ fi
 if [ "${ACTION}" = "CLEAN" ]; then
     clean "${TEST_DIR}"
     exit
-else 
+else
     test "${TEST_DIR}" "${DEFAULT_CMD}"
     print_final_score
 fi
